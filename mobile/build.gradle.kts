@@ -121,11 +121,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
-
     implementation(libs.pdfbox.android)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.gson)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.jsoup)
+    implementation(libs.androidx.fragment)
 }
