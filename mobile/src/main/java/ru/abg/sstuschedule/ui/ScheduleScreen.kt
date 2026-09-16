@@ -707,12 +707,17 @@ private fun weekdayShort(full: String): String = when (full.lowercase(Locale.ROO
     else -> full.take(2)
 }
 
+internal var previewMinutesOverride: Int? = null
+internal var previewDateOverride: String? = null
+
 private fun findTodayLocation(weeks: List<WeekSchedule>): Pair<Int, Int>? {
-    val cal = Calendar.getInstance()
-    val today = "%02d.%02d".format(
-        cal.get(Calendar.DAY_OF_MONTH),
-        cal.get(Calendar.MONTH) + 1
-    )
+    val today = previewDateOverride ?: run {
+        val cal = Calendar.getInstance()
+        "%02d.%02d".format(
+            cal.get(Calendar.DAY_OF_MONTH),
+            cal.get(Calendar.MONTH) + 1
+        )
+    }
     weeks.forEachIndexed { wIdx, week ->
         week.days.forEachIndexed { dIdx, day ->
             if (day.date == today) return wIdx to dIdx
@@ -722,17 +727,21 @@ private fun findTodayLocation(weeks: List<WeekSchedule>): Pair<Int, Int>? {
 }
 
 private fun isToday(day: DaySchedule): Boolean {
-    val cal = Calendar.getInstance()
-    val today = "%02d.%02d".format(
-        cal.get(Calendar.DAY_OF_MONTH),
-        cal.get(Calendar.MONTH) + 1
-    )
+    val today = previewDateOverride ?: run {
+        val cal = Calendar.getInstance()
+        "%02d.%02d".format(
+            cal.get(Calendar.DAY_OF_MONTH),
+            cal.get(Calendar.MONTH) + 1
+        )
+    }
     return day.date == today
 }
 
 private fun currentMinutes(): Int {
-    val cal = Calendar.getInstance()
-    return cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
+    return previewMinutesOverride ?: run {
+        val cal = Calendar.getInstance()
+        cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
+    }
 }
 
 private fun parseMinutes(hhmm: String): Int {
