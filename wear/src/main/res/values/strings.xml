@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SSTU Schedule</string>
+
+    <!-- Manifest labels (required) -->
+    <string name="tile_label">Schedule</string>
+    <string name="complication_label">Next class</string>
+
+    <!-- UI -->
+    <string name="title_schedule">Schedule</string>
+    <string name="state_loading">Loading…</string>
+    <string name="state_empty">No data</string>
+    <string name="state_empty_day">No classes</string>
+    <string name="state_open_phone">Open the app on your phone</string>
+    <string name="room_prefix">room %1$s</string>
+
+    <!-- Weekdays -->
+    <string name="weekday_mon_short">Mon</string>
+    <string name="weekday_tue_short">Tue</string>
+    <string name="weekday_wed_short">Wed</string>
+    <string name="weekday_thu_short">Thu</string>
+    <string name="weekday_fri_short">Fri</string>
+    <string name="weekday_sat_short">Sat</string>
+    <string name="weekday_sun_short">Sun</string>
+</resources>

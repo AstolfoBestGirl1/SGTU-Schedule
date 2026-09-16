@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">СГТУ Расписание</string>
+
+    <!-- Manifest labels (required) -->
+    <string name="tile_label">Расписание</string>
+    <string name="complication_label">Следующая пара</string>
+
+    <!-- UI -->
+    <string name="title_schedule">Расписание</string>
+    <string name="state_loading">Загрузка…</string>
+    <string name="state_empty">Нет данных</string>
+    <string name="state_empty_day">Нет пар</string>
+    <string name="state_open_phone">Откройте приложение на телефоне</string>
+    <string name="room_prefix">ауд. %1$s</string>
+
+    <!-- Weekdays -->
+    <string name="weekday_mon_short">Пн</string>
+    <string name="weekday_tue_short">Вт</string>
+    <string name="weekday_wed_short">Ср</string>
+    <string name="weekday_thu_short">Чт</string>
+    <string name="weekday_fri_short">Пт</string>
+    <string name="weekday_sat_short">Сб</string>
+    <string name="weekday_sun_short">Вс</string>
+</resources>

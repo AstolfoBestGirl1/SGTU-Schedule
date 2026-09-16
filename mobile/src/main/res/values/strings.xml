@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SSTU Schedule</string>
+
+    <!-- Top bar -->
+    <string name="title_schedule">Schedule</string>
+    <string name="title_select_group">Select group</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_refreshing">Refreshing…</string>
+    <string name="action_alarm">Alarm</string>
+
+    <!-- States -->
+    <string name="state_loading">Loading…</string>
+    <string name="state_empty">Schedule is empty</string>
+    <string name="state_empty_day">No classes</string>
+    <string name="state_error">Failed to load schedule</string>
+    <string name="action_retry">Retry</string>
+
+    <!-- Lesson types -->
+    <string name="type_lecture">lecture</string>
+    <string name="type_practice">practice</string>
+    <string name="type_lab">lab</string>
+
+    <!-- Room -->
+    <string name="room_prefix">room %1$s</string>
+
+    <!-- Alarm dialog -->
+    <string name="alarm_dialog_title">Class alarm</string>
+    <string name="alarm_dialog_enable">Enable</string>
+    <string name="alarm_dialog_minutes_label">Minutes before class</string>
+    <string name="alarm_dialog_hint">From 5 to 180 minutes</string>
+    <string name="alarm_dialog_error">Enter a number from 5 to 180</string>
+    <string name="alarm_dialog_save">Save</string>
+    <string name="alarm_dialog_cancel">Cancel</string>
+
+    <!-- Notification -->
+    <string name="alarm_notification_title">Class starting soon</string>
+    <string name="alarm_notification_text">In %1$d min: %2$s</string>
+    <string name="alarm_channel_name">Class alarm</string>
+
+    <!-- Group selection -->
+    <string name="group_selection_title">Group selection</string>
+    <string name="group_selection_search">Search group</string>
+    <string name="group_selection_found">Found: %1$d</string>
+    <!-- Weekdays -->
+    <string name="weekday_mon_short">Mon</string>
+    <string name="weekday_tue_short">Tue</string>
+    <string name="weekday_wed_short">Wed</string>
+    <string name="weekday_thu_short">Thu</string>
+    <string name="weekday_fri_short">Fri</string>
+    <string name="weekday_sat_short">Sat</string>
+    <string name="weekday_sun_short">Sun</string>
+</resources>

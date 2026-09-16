@@ -1,0 +1,100 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Read version
+        id: version
+        run: |
+          MAJOR=$(grep -E '^VERSION_MAJOR=' version.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          MINOR=$(grep -E '^VERSION_MINOR=' version.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          PATCH=$(grep -E '^VERSION_PATCH=' version.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Check if tag exists
+        id: tag_check
+        run: |
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > release-keystore.jks
+
+      - name: Create keystore.properties
+        run: |
+          cat <<EOF > keystore.properties
+          storeFile=release-keystore.jks
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          EOF
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build APK and AAB
+        run: |
+          ./gradlew :mobile:assembleRelease :wear:assembleRelease :mobile:bundleRelease :wear:bundleRelease
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p release-artifacts
+          find mobile/build/outputs/apk/release -name "*.apk" -exec cp {} release-artifacts/phone-release.apk \;
+          find wear/build/outputs/apk/release -name "*.apk" -exec cp {} release-artifacts/wear-release.apk \;
+          find mobile/build/outputs/bundle/release -name "*.aab" -exec cp {} release-artifacts/phone-release.aab \;
+          find wear/build/outputs/bundle/release -name "*.aab" -exec cp {} release-artifacts/wear-release.aab \;
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: release-artifacts/*
+
+      - name: Create Release
+        if: steps.tag_check.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          files: |
+            release-artifacts/phone-release.apk
+            release-artifacts/wear-release.apk
+            release-artifacts/phone-release.aab
+            release-artifacts/wear-release.aab
+          generate_release_notes: true
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip release (tag already exists)
+        if: steps.tag_check.outputs.exists == 'true'
+        run: |
+          echo "Тег v${{ steps.version.outputs.version }} уже существует."
+          echo "Измените версию в version.properties, чтобы выпустить новый релиз."
