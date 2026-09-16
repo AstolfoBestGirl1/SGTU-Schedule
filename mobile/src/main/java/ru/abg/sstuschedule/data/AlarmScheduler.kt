@@ -179,16 +179,15 @@ object AlarmScheduler {
         for (week in weeks) {
             for (day in week.days) {
                 val dayBase = parseDay(day.date, nowMs) ?: continue
-                for (lesson in day.lessons) {
-                    val (h, m) = parseTime(lesson.start) ?: continue
-                    val cal = dayBase.clone() as Calendar
-                    cal.set(Calendar.HOUR_OF_DAY, h)
-                    cal.set(Calendar.MINUTE, m)
-                    cal.set(Calendar.SECOND, 0)
-                    cal.set(Calendar.MILLISECOND, 0)
-                    if (cal.timeInMillis > nowMs) {
-                        candidates.add(cal.timeInMillis to lesson)
-                    }
+                val lesson = day.lessons.minByOrNull { it.start } ?: continue
+                val (h, m) = parseTime(lesson.start) ?: continue
+                val cal = dayBase.clone() as Calendar
+                cal.set(Calendar.HOUR_OF_DAY, h)
+                cal.set(Calendar.MINUTE, m)
+                cal.set(Calendar.SECOND, 0)
+                cal.set(Calendar.MILLISECOND, 0)
+                if (cal.timeInMillis > nowMs) {
+                    candidates.add(cal.timeInMillis to lesson)
                 }
             }
         }

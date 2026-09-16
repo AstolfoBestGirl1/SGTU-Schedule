@@ -248,8 +248,7 @@ fun ScheduleScreen(
                                     LessonCard(
                                         lesson = lesson,
                                         isCurrent = isToday && isCurrentLesson(lesson),
-                                        isNext = isToday &&
-                                                isNextLesson(currentDay.lessons, idx)
+                                        isNext = isToday && isNextLesson(currentDay.lessons, idx)
                                     )
                                 }
                             }
