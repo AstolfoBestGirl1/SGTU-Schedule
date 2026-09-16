@@ -29,11 +29,12 @@ android {
     defaultConfig {
         applicationId = "ru.abg.sstuschedule"
         minSdk = 30
-        targetSdk = 37
+        targetSdk = 36
         versionCode = appVersionCode
         versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
@@ -53,9 +54,17 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
-            optimization {
-                enable = false
-            }
+            isMinifyEnabled = true
+            isShrinkResources = true
+            isDebuggable = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        debug {
+            isMinifyEnabled = false
+            applicationIdSuffix = ".debug"
         }
     }
 
@@ -66,6 +75,32 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = false
+    }
+
+    // Разделение по ABI — уменьшает размер APK
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86_64")
+            isUniversalApk = false
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += setOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+                "/META-INF/DEPENDENCIES",
+                "/META-INF/LICENSE*",
+                "/META-INF/NOTICE*",
+                "/META-INF/*.kotlin_module",
+                "/META-INF/versions/**",
+                "DebugProbesKt.bin",
+                "kotlin-tooling-metadata.json"
+            )
+        }
     }
 }
 
@@ -89,7 +124,6 @@ dependencies {
 
     implementation(libs.pdfbox.android)
     implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.gson)
     implementation(libs.androidx.compose.material.icons.extended)
