@@ -18,6 +18,11 @@ val appVersionName = "$vMajor.$vMinor.$vPatch"
 val appVersionCode = vMajor * 10000 + vMinor * 100 + vPatch
 // ------------------------------------------
 
+// Определяем, собирается ли Android App Bundle
+val isBuildingBundle = gradle.startParameter.taskNames.any {
+    it.lowercase().contains("bundle")
+}
+
 android {
     namespace = "ru.abg.sstuschedule"
     compileSdk {
@@ -29,7 +34,7 @@ android {
     defaultConfig {
         applicationId = "ru.abg.sstuschedule"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = appVersionCode
         versionName = appVersionName
 
@@ -78,13 +83,14 @@ android {
         buildConfig = false
     }
 
-    // Разделение по ABI — уменьшает размер APK
     splits {
         abi {
-            isEnable = true
+            // Отключаем splits при сборке AAB — иначе Gradle создаёт
+            // конфликтующие ресурсы для каждой архитектуры.
+            isEnable = !isBuildingBundle
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86_64")
-            isUniversalApk = false
+            isUniversalApk = true
         }
     }
 
@@ -121,6 +127,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
     implementation(libs.pdfbox.android)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.kotlinx.coroutines.android)

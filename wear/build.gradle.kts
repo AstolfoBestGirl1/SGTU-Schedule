@@ -18,6 +18,11 @@ val appVersionName = "$vMajor.$vMinor.$vPatch"
 val appVersionCode = vMajor * 10000 + vMinor * 100 + vPatch
 // ------------------------------------------
 
+// Определяем, собирается ли Android App Bundle
+val isBuildingBundle = gradle.startParameter.taskNames.any {
+    it.lowercase().contains("bundle")
+}
+
 android {
     namespace = "ru.abg.sstuschedule"
     compileSdk {
@@ -79,13 +84,13 @@ android {
         buildConfig = false
     }
 
-    // Wear OS работает только на ARM — x86_64 не нужен
     splits {
         abi {
-            isEnable = true
+            // Отключаем splits при сборке AAB
+            isEnable = !isBuildingBundle
             reset()
             include("armeabi-v7a", "arm64-v8a")
-            isUniversalApk = false
+            isUniversalApk = true
         }
     }
 
