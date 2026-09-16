@@ -516,42 +516,53 @@ private fun LessonCard(
                     text = lesson.start,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = when {
+                        isCurrent -> MaterialTheme.colorScheme.onPrimaryContainer
+                        else -> MaterialTheme.colorScheme.onSurface
+                    }
                 )
                 Text(
                     text = lesson.end,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = when {
+                        isCurrent -> MaterialTheme.colorScheme.onPrimaryContainer
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                    }
                 )
                 Spacer(Modifier.height(6.dp))
-                TypeBadge(lesson.type)
+                TypeBadge(
+                    type = lesson.type,
+                    isHighlighted = isCurrent
+                )
             }
-
             Spacer(Modifier.width(12.dp))
-
             Box(
                 modifier = Modifier
-                    .width(3.dp)
-                    .height(72.dp)
-                    .clip(CircleShape)
-                    .background(border)
+                .width(3.dp)
+                .height(72.dp)
+                .clip(CircleShape)
+                .background(border)
             )
-
             Spacer(Modifier.width(12.dp))
-
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = lesson.subject,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = when {
+                        isCurrent -> MaterialTheme.colorScheme.onPrimaryContainer
+                        else -> MaterialTheme.colorScheme.onSurface
+                    },
                 )
                 if (lesson.room.isNotEmpty()) {
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = stringResource(R.string.room_prefix, lesson.room),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = when {
+                            isCurrent -> MaterialTheme.colorScheme.onPrimaryContainer
+                            else -> MaterialTheme.colorScheme.primary
+                        },
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -560,14 +571,20 @@ private fun LessonCard(
                     Text(
                         text = lesson.teacher,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = when {
+                            isCurrent -> MaterialTheme.colorScheme.onPrimaryContainer
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                     )
                 }
                 if (!lesson.teacher2.isNullOrEmpty()) {
                     Text(
                         text = lesson.teacher2,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = when {
+                            isCurrent -> MaterialTheme.colorScheme.onPrimaryContainer
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                     )
                 }
             }
@@ -576,7 +593,7 @@ private fun LessonCard(
 }
 
 @Composable
-private fun TypeBadge(type: String) {
+private fun TypeBadge(type: String, isHighlighted: Boolean = false) {
     if (type.isEmpty()) return
 
     val labelRes: Int? = when (type.lowercase(Locale.ROOT)) {
@@ -591,16 +608,25 @@ private fun TypeBadge(type: String) {
         "лаб" -> MaterialTheme.colorScheme.secondary
         else -> MaterialTheme.colorScheme.outline
     }
+    val onColor = when (type.lowercase(Locale.ROOT)) {
+        "лекц" -> MaterialTheme.colorScheme.onPrimary
+        "прак" -> MaterialTheme.colorScheme.onTertiary
+        "лаб" -> MaterialTheme.colorScheme.onSecondary
+        else -> MaterialTheme.colorScheme.onSurface
+    }
     val label = labelRes?.let { stringResource(it) } ?: type
+
+    val backgroundColor = if (isHighlighted) color else color.copy(alpha = 0.15f)
+    val textColor = if (isHighlighted) onColor else color
 
     Surface(
         shape = RoundedCornerShape(6.dp),
-        color = color.copy(alpha = 0.15f)
+        color = backgroundColor
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = color,
+            color = textColor,
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
         )
     }
